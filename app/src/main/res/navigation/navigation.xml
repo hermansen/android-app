@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="se.swosch.jackson.ui.main.MainFragment"
+        android:label="Latest joke">
+        <action
+            android:id="@+id/action_mainFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="se.swosch.jackson.ui.list.ListFragment"
+        android:label="Joke list" >
+        <action
+            android:id="@+id/action_listFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="se.swosch.jackson.ui.detail.DetailFragment"
+        android:label="Rate this joke"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="joke"
+            app:argType="se.swosch.jackson.ui.ChuckJoke" />
+    </fragment>
+</navigation>

@@ -4,13 +4,14 @@ import android.app.Application
 import android.provider.Contacts
 import android.view.View
 import androidx.lifecycle.*
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import se.swosch.jackson.databinding.SingleLiveData
 import se.swosch.jackson.ui.ChuckJoke
 import se.swosch.jackson.ui.ChuckRepo
 
-class MainViewModel(app: Application) : AndroidViewModel(app) {
+class MainViewModel(app: Application) : AndroidViewModel(app), SwipeRefreshLayout.OnRefreshListener {
 
     sealed class Command {
         object NavigateToListCommand : Command()
@@ -22,13 +23,17 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     sealed class UIState {
         object Loading : UIState()
         object Done : UIState()
+        object Refreshing : UIState()
     }
 
     private val _uiState = SingleLiveData<UIState>()
+    val uiState: LiveData<UIState> = _uiState
+
     val progressBarVisible: LiveData<Boolean> = _uiState.map {
         when (it) {
             UIState.Loading -> true
             UIState.Done -> false
+            UIState.Refreshing -> false
         }
     }
 
@@ -43,6 +48,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     init {
         // load first joke directly
         flow<ChuckJoke> {
+            _uiState.postValue(UIState.Loading)
             refreshJoke()
         }.flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
@@ -64,8 +70,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         _commands.postValue(Command.NavigateToListCommand)
     }
 
+    override fun onRefresh() {
+        _uiState.postValue(UIState.Refreshing)
+        refresh()
+    }
+
     private suspend fun refreshJoke() {
-        _uiState.postValue(UIState.Loading)
         jokeFlow().collect {
             saveJoke(it)
             _chuckJoke.postValue(it)

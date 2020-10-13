@@ -6,29 +6,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import kotlinx.android.synthetic.main.main_fragment.*
 import se.swosch.jackson.R
 import se.swosch.jackson.databinding.MainFragmentBinding
 
 class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.main_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.refresh_action) {
-            viewModel.refresh()
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +30,14 @@ class MainFragment : Fragment() {
                 MainViewModel.Command.NavigateToListCommand -> navigateToList()
             }
         })
+        viewModel.uiState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                MainViewModel.UIState.Done -> swipeRefresh.isRefreshing = false
+                MainViewModel.UIState.Refreshing -> swipeRefresh.isRefreshing = true
+
+            }
+        })
+        swipeRefresh.setOnRefreshListener(viewModel)
     }
 
     private fun navigateToList() {

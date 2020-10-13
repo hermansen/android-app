@@ -1,9 +1,7 @@
 package se.swosch.jackson.ui.main
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -14,6 +12,23 @@ import se.swosch.jackson.databinding.MainFragmentBinding
 class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.refresh_action) {
+            viewModel.refresh()
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,11 +46,6 @@ class MainFragment : Fragment() {
                 MainViewModel.Command.NavigateToListCommand -> navigateToList()
             }
         })
-    }
-
-    override fun onStop() {
-        super.onStop()
-        viewModel.commands.removeObservers(viewLifecycleOwner)
     }
 
     private fun navigateToList() {

@@ -7,10 +7,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import se.swosch.jackson.databinding.SingleLiveData
-import se.swosch.jackson.generated.callback.OnClickListener
 import se.swosch.jackson.ui.ChuckJoke
 import se.swosch.jackson.ui.ChuckRepo
-import se.swosch.jackson.ui.main.MainViewModel
 
 class ListViewModel(app: Application) : AndroidViewModel(app) {
 

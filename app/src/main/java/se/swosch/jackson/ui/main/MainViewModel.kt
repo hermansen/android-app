@@ -1,6 +1,7 @@
 package se.swosch.jackson.ui.main
 
 import android.app.Application
+import android.provider.Contacts
 import android.view.View
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,19 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _commands = SingleLiveData<Command>()
     val commands: LiveData<Command> = _commands
+
+    sealed class UIState {
+        object Loading : UIState()
+        object Done : UIState()
+    }
+
+    private val _uiState = SingleLiveData<UIState>()
+    val progressBarVisible: LiveData<Boolean> = _uiState.map {
+        when (it) {
+            UIState.Loading -> true
+            UIState.Done -> false
+        }
+    }
 
     private val repo = ChuckRepo(getApplication())
 
@@ -51,9 +65,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private suspend fun refreshJoke() {
+        _uiState.postValue(UIState.Loading)
         jokeFlow().collect {
             saveJoke(it)
             _chuckJoke.postValue(it)
+            _uiState.postValue(UIState.Done)
         }
     }
 

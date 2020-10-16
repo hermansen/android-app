@@ -2,10 +2,7 @@ package se.swosch.jackson.ui
 
 import android.content.Context
 import android.os.Parcelable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asFlow
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,6 +12,7 @@ import kotlinx.coroutines.flow.flowOn
 import se.swosch.jackson.db.ChuckDatabase
 import se.swosch.jackson.http.ChuckClient
 import se.swosch.jackson.http.models.ChuckResponse
+import timber.log.Timber
 
 class ChuckRepo(private val context: Context) {
 
@@ -33,15 +31,15 @@ class ChuckRepo(private val context: Context) {
             }
         }
 
-    fun getRating(jokeId: String?): LiveData<Rating> =
-        ChuckDatabase.getInstance(context).ratingDao().getForJoke(jokeId)
-            .map {
-                if (it == null) {
-                    Rating()
-                } else {
-                    it.asDomainModel()
-                }
-            }
+    fun getRating(jokeId: String?): LiveData<Rating> {
+        Timber.i("DEBUG SESH: getting rating")
+        return if (jokeId == null) {
+            Timber.i("DEBUG SESH: returning rating")
+            MutableLiveData(Rating())
+        } else {
+            ChuckDatabase.getInstance(context).ratingDao().getForJoke(jokeId).map { it.asDomainModel() }
+        }
+    }
 
     fun updateRating(ratingId: Int?, jokeId: String, stars: Int) {
         val rating =

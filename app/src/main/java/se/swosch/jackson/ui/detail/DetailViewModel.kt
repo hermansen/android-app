@@ -16,7 +16,6 @@ class DetailViewModel(app: Application) : AndroidViewModel(app) {
     val chuckJoke: LiveData<ChuckJoke> = _chuckJoke
 
     var rating: LiveData<Rating> = MutableLiveData()
-
     private val newRating = MutableLiveData<Int>()
 
     private val repo = ChuckRepo(app.applicationContext)

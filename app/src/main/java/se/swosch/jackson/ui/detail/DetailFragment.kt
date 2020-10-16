@@ -15,7 +15,6 @@ import kotlin.math.roundToInt
 class DetailFragment : Fragment() {
 
     private val args by navArgs<DetailFragmentArgs>()
-
     private val viewModel: DetailViewModel by viewModels()
 
     override fun onCreateView(
@@ -29,9 +28,5 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setJoke(args.joke)
-
-        ratingBar.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
-            viewModel.updateRating(rating.roundToInt())
-        }
     }
 }

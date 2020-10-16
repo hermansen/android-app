@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.*
 import se.swosch.jackson.databinding.SingleLiveData
 import se.swosch.jackson.ui.ChuckJoke
 import se.swosch.jackson.ui.ChuckRepo
+import se.swosch.jackson.ui.Rating
+import timber.log.Timber
 
 class MainViewModel(app: Application) : AndroidViewModel(app), SwipeRefreshLayout.OnRefreshListener {
 
@@ -45,6 +47,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app), SwipeRefreshLayou
     private val _chuckJoke = MutableLiveData<ChuckJoke>()
     val chuckJoke: LiveData<ChuckJoke> = _chuckJoke
 
+    private val _rating = MutableLiveData<Rating>()
+    val rating: LiveData<Rating> = _rating
+    private val newRating = MutableLiveData<Int>()
+
     init {
         // load first joke directly
         flow<ChuckJoke> {
@@ -60,10 +66,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app), SwipeRefreshLayou
             }
             .flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
-    }
 
-    fun refresh() {
-        refreshClicked.postValue(Unit)
+        newRating.asFlow()
+            .onEach {
+                repo.updateRating(this.rating.value?.id, chuckJoke.value!!.id, it)
+            }
+            .flowOn(Dispatchers.IO)
+            .launchIn(viewModelScope)
     }
 
     fun toListView(view: View) {
@@ -75,10 +84,20 @@ class MainViewModel(app: Application) : AndroidViewModel(app), SwipeRefreshLayou
         refresh()
     }
 
+    fun updateRating(rating: Int) {
+        newRating.postValue(rating)
+    }
+
+    private fun refresh() {
+        refreshClicked.postValue(Unit)
+    }
+
     private suspend fun refreshJoke() {
+        Timber.i("DEBUG SESH: refreshing joke")
         jokeFlow().collect {
-            saveJoke(it)
+            _rating.postValue(Rating())
             _chuckJoke.postValue(it)
+            saveJoke(it)
             _uiState.postValue(UIState.Done)
         }
     }

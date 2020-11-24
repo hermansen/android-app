@@ -9,6 +9,8 @@ import android.widget.RatingBar
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.android.synthetic.main.fragment_detail.ratingBar
+import kotlinx.android.synthetic.main.main_fragment.*
 import se.swosch.jackson.databinding.FragmentDetailBinding
 import kotlin.math.roundToInt
 
@@ -28,5 +30,8 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setJoke(args.joke)
+        ratingBar.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
+            viewModel.updateRating(rating.roundToInt())
+        }
     }
 }

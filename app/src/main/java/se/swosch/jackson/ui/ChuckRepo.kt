@@ -18,7 +18,10 @@ class ChuckRepo(private val context: Context) {
 
     @ExperimentalCoroutinesApi
     fun getRandomJoke(): Flow<ChuckJoke> = flow {
-        emit(ChuckClient.instance.random().asChuckJoke())
+        val client = ChuckClient.instance
+        val joke = client.random()
+        val chuckJoke = joke.asChuckJoke()
+        emit(chuckJoke)
     }.flowOn(Dispatchers.IO)
 
     fun saveJoke(joke: ChuckJoke) =
@@ -37,7 +40,9 @@ class ChuckRepo(private val context: Context) {
             Timber.i("DEBUG SESH: returning rating")
             MutableLiveData(Rating())
         } else {
-            ChuckDatabase.getInstance(context).ratingDao().getForJoke(jokeId).map { it.asDomainModel() }
+            ChuckDatabase.getInstance(context).ratingDao().getForJoke(jokeId).map {
+                it.asDomainModel()
+            }
         }
     }
 
@@ -57,7 +62,7 @@ class ChuckRepo(private val context: Context) {
 @Parcelize
 data class ChuckJoke(val id: String, val joke: String, val imgUrl: String) : Parcelable
 
-private fun se.swosch.jackson.db.entities.ChuckJoke.asDomainModel() =
+private fun se.swosch.jackson.db.entities.ChuckJoke.asDomainModel(): ChuckJoke =
     ChuckJoke(this.id, this.joke, this.imgUrl)
 
 fun ChuckJoke.asDatabaseEntity(): se.swosch.jackson.db.entities.ChuckJoke =
@@ -65,10 +70,16 @@ fun ChuckJoke.asDatabaseEntity(): se.swosch.jackson.db.entities.ChuckJoke =
 
 data class Rating(val id: Int = 0, val jokeId: String = "", val stars: Int = 0)
 
-private fun se.swosch.jackson.db.entities.Rating.asDomainModel() =
-    Rating(this.id, this.jokeId, this.stars)
+private fun se.swosch.jackson.db.entities.Rating.asDomainModel(): Rating {
+    return if (this == null) {
+        Rating()
+    } else {
+        Rating(this.id, this.jokeId, this.stars)
+    }
+}
 
-private fun Rating.asDatabaseEntity() =
+
+private fun Rating.asDatabaseEntity(): se.swosch.jackson.db.entities.Rating =
     se.swosch.jackson.db.entities.Rating(this.id, this.jokeId, this.stars)
 
 fun ChuckResponse.asChuckJoke(): ChuckJoke = ChuckJoke(this.id, this.value, this.iconUrl)

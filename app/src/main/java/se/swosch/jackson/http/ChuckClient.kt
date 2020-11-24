@@ -3,6 +3,7 @@ package se.swosch.jackson.http
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.http.GET
@@ -20,10 +21,16 @@ interface ChuckClient {
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .build()
 
+            val loggingInterceptors = HttpLoggingInterceptor()
+            loggingInterceptors.level = HttpLoggingInterceptor.Level.BODY
+            val okHttpClient = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptors)
+                .build()
+
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.chucknorris.io")
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
-                .client(OkHttpClient.Builder().build())
+                .client(okHttpClient)
                 .build()
 
             retrofit.create(ChuckClient::class.java)

@@ -13,7 +13,8 @@ import se.swosch.jackson.ui.ChuckRepo
 import se.swosch.jackson.ui.Rating
 import timber.log.Timber
 
-class MainViewModel(app: Application) : AndroidViewModel(app), SwipeRefreshLayout.OnRefreshListener {
+class MainViewModel(app: Application) : AndroidViewModel(app),
+    SwipeRefreshLayout.OnRefreshListener {
 
     sealed class Command {
         object NavigateToListCommand : Command()
@@ -56,7 +57,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app), SwipeRefreshLayou
         flow<ChuckJoke> {
             _uiState.postValue(UIState.Loading)
             refreshJoke()
-        }.flowOn(Dispatchers.IO)
+        }
+            .flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
 
         // whenever refresh is clicked
@@ -75,7 +77,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app), SwipeRefreshLayou
             .launchIn(viewModelScope)
     }
 
-    fun toListView(view: View) {
+    fun toListView() {
         _commands.postValue(Command.NavigateToListCommand)
     }
 

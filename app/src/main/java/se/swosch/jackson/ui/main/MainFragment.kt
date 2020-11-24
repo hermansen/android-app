@@ -43,6 +43,15 @@ class MainFragment : Fragment() {
         ratingBar.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
             viewModel.updateRating(rating.roundToInt())
         }
+        bottomAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.search -> {
+                    viewModel.toListView()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun navigateToList() {

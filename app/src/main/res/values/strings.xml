@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">jackson</string>
+    <string name="app_name">Android app</string>
     <string name="img_description">Avatar</string>
     <string name="refresh">Refresh</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="gotoList">List</string>
     <string name="search">Search</string>
-    <string name="content_description_search">Search old jokes</string>
+    <string name="content_description_search">List old jokes</string>
 </resources>

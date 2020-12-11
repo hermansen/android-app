@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="se.swosch.jackson.ui.list.ListViewModel" />
+            type="se.sl.androidapp.ui.list.ListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/list"

@@ -7,7 +7,7 @@
     <data>
         <variable
             name="viewModel"
-            type="se.swosch.jackson.ui.detail.DetailViewModel" />
+            type="se.sl.androidapp.ui.detail.DetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

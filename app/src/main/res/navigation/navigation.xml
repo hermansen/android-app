@@ -28,6 +28,6 @@
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="joke"
-            app:argType="se.sl.androidapp.ui.ChuckJoke" />
+            app:argType="se.sl.androidapp.model.ChuckJoke" />
     </fragment>
 </navigation>

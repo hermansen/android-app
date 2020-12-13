@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_list.*
 import se.sl.androidapp.databinding.FragmentListBinding
-import se.sl.androidapp.ui.ChuckJoke
+import se.sl.androidapp.model.ChuckJoke
 
 class ListFragment : Fragment() {
 

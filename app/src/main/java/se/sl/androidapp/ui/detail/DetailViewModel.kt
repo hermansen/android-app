@@ -6,9 +6,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import se.sl.androidapp.ui.ChuckJoke
+import se.sl.androidapp.model.ChuckJoke
+import se.sl.androidapp.model.Rating
 import se.sl.androidapp.ui.ChuckRepo
-import se.sl.androidapp.ui.Rating
 
 class DetailViewModel(app: Application) : AndroidViewModel(app) {
 

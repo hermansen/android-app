@@ -23,6 +23,10 @@ class ChuckRepo(private val context: Context) {
         emit(chuckJoke)
     }
 
+    suspend fun randomJoke(): ChuckJoke {
+        return ChuckClient.instance.random().asChuckJoke()
+    }
+
     fun saveJoke(joke: ChuckJoke) =
         ChuckDatabase.getInstance(context).chuckJokeDao().save(joke.asJokeDatabaseEntity())
 

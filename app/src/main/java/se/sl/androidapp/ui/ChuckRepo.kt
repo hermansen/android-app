@@ -15,14 +15,6 @@ import timber.log.Timber
 
 class ChuckRepo(private val context: Context) {
 
-    @ExperimentalCoroutinesApi
-    fun getRandomJoke(): Flow<ChuckJoke> = flow {
-        val client = ChuckClient.instance
-        val joke = client.random()
-        val chuckJoke = joke.asChuckJoke()
-        emit(chuckJoke)
-    }
-
     suspend fun randomJoke(): ChuckJoke {
         return ChuckClient.instance.random().asChuckJoke()
     }
